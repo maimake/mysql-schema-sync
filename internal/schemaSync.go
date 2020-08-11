@@ -3,6 +3,7 @@ package internal
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -44,6 +45,8 @@ func (sc *SchemaSync) getAlterDataByTable(table string) *TableAlterData {
 
 	sschema := sc.SourceDb.GetTableSchema(table)
 	dschema := sc.DestDb.GetTableSchema(table)
+
+
 
 	alter.SchemaDiff = newSchemaDiff(table, sschema, dschema)
 
@@ -305,6 +308,9 @@ func CheckSchemaDiff(cfg *Config) {
 	countSuccess := 0
 	countFailed := 0
 	canRunTypePref := "single"
+
+	outSQL := ""
+
 	// 先执行单个表的
 run_sync:
 	for typeName, sds := range changedTables {
@@ -323,6 +329,9 @@ run_sync:
 		}
 
 		sql := strings.Join(sqls, ";\n") + ";"
+
+		outSQL = outSQL + "\n\n" + sql
+
 		var ret error
 
 		if sc.Config.Sync {
@@ -351,5 +360,31 @@ run_sync:
 	if sc.Config.Sync {
 		log.Println("execute_all_sql_done,success_total:", countSuccess, "failed_total:", countFailed)
 	}
+
+	if "" != outSQL {
+		log.Println("比对结果：")
+		log.Println(outSQL)
+	}
+
+	if sc.Config.OutputPath != "" {
+		f, err := os.OpenFile(sc.Config.OutputPath, os.O_RDWR|os.O_CREATE, 0644)
+		if err != nil {
+			log.Fatalf("%s: %s", "打开文件失败", err)
+			os.Exit(1)
+		}
+
+		_, err = f.WriteString(outSQL)
+		if err != nil {
+			log.Fatalf("%s: %s", "写入文件失败", err)
+			os.Exit(1)
+		}
+
+		err = f.Close()
+		if err != nil {
+			log.Fatalf("%s: %s", "关闭文件失败", err)
+			os.Exit(1)
+		}
+	}
+
 
 }

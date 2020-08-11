@@ -19,6 +19,7 @@ var dest = flag.String("dest", "", "sync to, eg: test@(127.0.0.1:3306)/my_local_
 var tables = flag.String("tables", "", "tables to sync\neg : product_base,order_*")
 var tablesIGNORE = flag.String("tables_ignore", "", "tables ignore sync\neg : product_base,order_*")
 var mailTo = flag.String("mail_to", "", "overwrite config's email.to")
+var output = flag.String("output", "", "overwrite config's output")
 
 func init() {
 	log.SetFlags(log.Lshortfile | log.Ldate)
@@ -44,6 +45,8 @@ func main() {
 	}
 	cfg.Sync = *sync
 	cfg.Drop = *drop
+
+	cfg.OutputPath = *output
 
 	if *mailTo != "" && cfg.Email != nil {
 		cfg.Email.To = *mailTo

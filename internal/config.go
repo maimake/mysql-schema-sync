@@ -27,6 +27,8 @@ type Config struct {
 	Email      *EmailStruct `json:"email"`
 	ConfigPath string
 
+	OutputPath string
+
 	// Sync 是否真正的执行同步操作
 	Sync bool
 

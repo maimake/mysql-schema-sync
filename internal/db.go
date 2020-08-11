@@ -3,9 +3,9 @@ package internal
 import (
 	"database/sql"
 	"fmt"
-	"log"
-
 	_ "github.com/go-sql-driver/mysql"
+	"log"
+	"regexp"
 )
 
 // MyDb db struct
@@ -78,6 +78,13 @@ func (mydb *MyDb) GetTableSchema(name string) (schema string) {
 			panic(fmt.Sprintf("get table %s 's schema failed,%s", name, err))
 		}
 	}
+
+	reg := regexp.MustCompile("(DEFAULT\\s)?(COLLATE|CHARSET)[=\\s]\\w+")
+	schema = reg.ReplaceAllString(schema, "")
+
+	reg = regexp.MustCompile("[ ]{2,}")
+	schema = reg.ReplaceAllString(schema, " ")
+
 	return
 }
 
