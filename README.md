@@ -10,11 +10,12 @@ mysql表结构自动同步工具
 5.  **邮件**通知变动结果    
 6.  支持屏蔽更新**表、字段、索引、外键**  
 7.  支持本地比线上额外多一些表、字段、索引、外键
-
+8.  支持输出变更的 SQL
+9.  忽略字符集的不同, 忽略自增 ID 的不同
 
 
 ### 安装
->go get -u github.com/hidu/mysql-schema-sync
+>go get -u github.com/maimake/mysql-schema-sync
 
 
 ### 配置
@@ -85,7 +86,7 @@ log存储在当前的log目录中。
 
 ### 参数说明
 <code>
-mysql-schema-sync [-conf] [-dest] [-source] [-sync] [-drop]
+mysql-schema-sync [-conf] [-dest] [-source] [-sync] [-drop] [-output]
 </code>
 
 说明：
@@ -105,6 +106,8 @@ mysql-schema-sync [-conf] [-dest] [-source] [-sync] [-drop]
   -tables string
         待检查同步的数据库表，为空则是全部
         eg : product_base,order_*
+  -output string
+        将变动的 SQL 输出到文件
 
 </code>
 </pre>

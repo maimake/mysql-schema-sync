@@ -79,7 +79,10 @@ func (mydb *MyDb) GetTableSchema(name string) (schema string) {
 		}
 	}
 
-	reg := regexp.MustCompile("(DEFAULT\\s)?(COLLATE|CHARSET)[=\\s]\\w+")
+	reg := regexp.MustCompile("(?i)(DEFAULT\\s)?(COLLATE|CHARSET)[=\\s]\\w+")
+	schema = reg.ReplaceAllString(schema, "")
+
+	reg = regexp.MustCompile("(?i)AUTO_INCREMENT=\\w+")
 	schema = reg.ReplaceAllString(schema, "")
 
 	reg = regexp.MustCompile("[ ]{2,}")
